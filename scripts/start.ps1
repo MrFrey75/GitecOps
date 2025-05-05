@@ -1,10 +1,6 @@
-# ==========================================
-# GITEC Start Script – Module Import Section
-# ==========================================
 
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$moduleRoot = Join-Path $scriptRoot "modules"
-
+$repoUrl = "https://github.com/MrFrey75/GitecOps.git"
+$repoName = "GitecOps"
 # List of all module files to import
 $gitecModules = @(
     "LoggingHelper",
@@ -21,6 +17,17 @@ $gitecModules = @(
     "LocalAdminHelper",
     "GitVersionHelper"
 )
+
+# ==========================================
+# GITEC Start Script – Module Import Section
+# ==========================================
+
+$baseRoot = Join-Path "c:/" $repoName
+$scriptRoot = Join-Path $baseRoot "scripts"
+$moduleRoot = Join-Path $scriptRoot "modules"
+$assetsRoot = Join-Path $baseRoot "assets"
+$packagesRoot = Join-Path $baseRoot "packages"
+
 
 function Install-GitWithRetries {
     param (
@@ -129,5 +136,24 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 # ==========================================
 # Check for git repository and clone if not present
 
+if (-not (Test-Path $repoName)) {
+    Write-Log "Cloning repository from $repoUrl..." -Level "INFO"
+    try {
+        git clone $repoUrl
+        Write-Log "Repository cloned successfully." -Level "INFO"
+    } catch {
+        Write-Log "Failed to clone repository: $_" -Level "ERROR"
+        exit 6
+    }
+} else {
+    Write-Log "Repository already exists. Skipping clone." -Level "INFO"
+}
 
+# ==========================================
+#  Make sure git repo is up to date
+# ==========================================
 
+$localVersion = Get-LocalRepoVersion -RepoPath $baseRoot -Ref "HEAD" -Short
+$remoteVersion = Get-RemoteRepoVersion -RepoPath $baseRoot -Branch "main" -Short
+Write-Host "Local Version: $localVersion" -ForegroundColor Green
+Write-Host "Remote Version: $remoteVersion" -ForegroundColor Green

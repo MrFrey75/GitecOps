@@ -24,34 +24,47 @@ function Import-LoggingIfAvailable {
 
 Import-LoggingIfAvailable
 
-function Get-GitecRepoVersion {
-    [CmdletBinding()]
-    param(
+function Get-RemoteRepoVersion {
+    param (
+        [Parameter(Mandatory)][string]$RepoPath,
+        [string]$Branch = "main",
+        [switch]$Short
+    )
+
+    $gitDir = Join-Path $RepoPath ".git"
+    $gitArgs = @("--git-dir=$gitDir", "ls-remote", "origin", "refs/heads/$Branch")
+    
+    $output = & git @gitArgs 2>&1
+    if ($LASTEXITCODE -eq 0 -and $output -match "^[0-9a-f]{40}") {
+        $hash = ($output -split "\t")[0]
+        if ($Short) {
+            $shortHash = & git --git-dir=$gitDir rev-parse --short $hash
+            return $shortHash.Trim()
+        }
+        return $hash.Trim()
+    } else {
+        Write-Log "Error getting remote git version: $output" -Level "ERROR"
+        return $null
+    }
+}
+
+function Get-LocalRepoVersion {
+    param (
         [Parameter(Mandatory)][string]$RepoPath,
         [string]$Ref = "HEAD",
         [switch]$Short
     )
 
-    if (-not (Test-Path $RepoPath)) {
-        Write-Log "Repo path does not exist: $RepoPath" -Level "ERROR"
-        return $null
-    }
+    $gitDir = Join-Path $RepoPath ".git"
+    $gitArgs = @("--git-dir=$gitDir", "--work-tree=$RepoPath", "rev-parse")
+    if ($Short) { $gitArgs += "--short" }
+    $gitArgs += $Ref
 
-    if (-not (Test-Path (Join-Path $RepoPath ".git"))) {
-        Write-Log "Path is not a Git repository: $RepoPath" -Level "ERROR"
-        return $null
-    }
-
-    try {
-        $gitArgs = "--git-dir=`"$RepoPath\.git`" rev-parse"
-        if ($Short) { $gitArgs += " --short" }
-        $gitArgs += " $Ref"
-
-        $gitVersion = & git $gitArgs
-        Write-Log "Local repo version for '$Ref' is $gitVersion" -Level "DEBUG"
-        return $gitVersion
-    } catch {
-        Write-Log "Failed to get local repo version for '$Ref': $_" -Level "ERROR"
+    $output = & git @gitArgs 2>&1
+    if ($LASTEXITCODE -eq 0 -and $output -notmatch "usage:") {
+        return $output.Trim()
+    } else {
+        Write-Log "Error getting local git version: $output" -Level "ERROR"
         return $null
     }
 }
