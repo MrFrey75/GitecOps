@@ -27,14 +27,14 @@
     - Console output colors are based on log level.
     - Console output can be toggled at runtime using Set-GitecLogSettings.
     - Log rotation or cleanup must be implemented externally if needed.
-    - Requires Ensure-GitecFile from FileDirectoryHelper if that module is present.
+    - Requires New-GitecFile from FileDirectoryHelper if that module is present.
 #>
 # Import-Module FileDirectoryHelper -Force -ErrorAction SilentlyContinue
 
 
 $script:LogName = "events"
 $script:EnableConsoleOutput = $true
-$script:LogRoot = "C:\GitecOps\logs"
+$script:LogRoot = "C:\ProgramData\GitecOps\"
 
 function Set-GitecLogSettings {
     [CmdletBinding()]
@@ -50,7 +50,7 @@ function Set-GitecLogSettings {
         New-Item -ItemType Directory -Path $script:LogRoot -Force | Out-Null
     }
 
-    Ensure-GitecFile -Path (Get-GitecLogFilePath)
+    New-GitecFile -Path (Get-GitecLogFilePath)
 }
 
 function Get-GitecLogFilePath {

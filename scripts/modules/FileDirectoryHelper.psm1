@@ -94,7 +94,7 @@ function Write-GitecFile {
         [switch]$Append
     )
 
-    Ensure-GitecFile -Path $Path
+    New-GitecFile -Path $Path
 
     if ($Append) {
         Add-Content -Path $Path -Value $Content
