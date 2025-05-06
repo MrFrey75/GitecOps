@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Provides standardized logging functionality for GITEC modules with optional console output.
+    Provides standardized logging functionality for GitecOps modules with optional console output.
 
 .DESCRIPTION
-    This module writes timestamped log messages to a designated file inside C:\GITEC\logs,
+    This module writes timestamped log messages to a designated file inside C:\GitecOps\logs,
     organized by log name (default: "events"). It includes support for logging levels
     (INFO, WARN, ERROR, DEBUG), color-coded console output, and ensures log directories/files exist.
 
@@ -23,7 +23,7 @@
     # Shortcut for logging at WARN level.
 
 .NOTES
-    - Logs are written to C:\GITEC\logs\<Name>.log.
+    - Logs are written to C:\GitecOps\logs\<Name>.log.
     - Console output colors are based on log level.
     - Console output can be toggled at runtime using Set-GitecLogSettings.
     - Log rotation or cleanup must be implemented externally if needed.
@@ -34,7 +34,7 @@
 
 $script:LogName = "events"
 $script:EnableConsoleOutput = $true
-$script:LogRoot = "C:\GITEC\logs"
+$script:LogRoot = "C:\GitecOps\logs"
 
 function Set-GitecLogSettings {
     [CmdletBinding()]

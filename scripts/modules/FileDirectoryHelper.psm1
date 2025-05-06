@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Provides simplified and standardized file and directory operations for use across GITEC tooling.
+    Provides simplified and standardized file and directory operations for use across GitecOps tooling.
 
 .DESCRIPTION
     This module contains helper functions for safely creating, reading, writing, and deleting files
@@ -11,19 +11,19 @@
     minimal file logic is essential.
 
 .EXAMPLE
-    New-GitecDirectory -Path "C:\GITEC\data"
+    New-GitecDirectory -Path "C:\GitecOps\data"
     # Ensures the directory exists, creating it if needed
 
 .EXAMPLE
-    Write-GitecFile -Path "C:\GITEC\data\notes.txt" -Content "Test log"
+    Write-GitecFile -Path "C:\GitecOps\data\notes.txt" -Content "Test log"
     # Writes (or creates and writes) the file at the path
 
 .EXAMPLE
-    $data = Read-GitecFile -Path "C:\GITEC\data\notes.txt"
+    $data = Read-GitecFile -Path "C:\GitecOps\data\notes.txt"
     # Reads the contents of a text file as a raw string
 
 .EXAMPLE
-    Get-GitecDirectoryFiles -Path "C:\GITEC\data" -Filter "*.json"
+    Get-GitecDirectoryFiles -Path "C:\GitecOps\data" -Filter "*.json"
     # Lists JSON files in the target directory
 
 .NOTES

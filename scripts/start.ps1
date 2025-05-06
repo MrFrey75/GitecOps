@@ -19,7 +19,7 @@ $gitecModules = @(
 )
 
 # ==========================================
-# GITEC Start Script – Module Import Section
+# GitecOps Start Script – Module Import Section
 # ==========================================
 
 $baseRoot = Join-Path "c:/" $repoName
@@ -91,12 +91,14 @@ foreach ($mod in $gitecModules) {
 }
 
 # ==========================================
-# GITEC Start Script – Main Execution Section
+# GitecOps Start Script – Main Execution Section
 # ==========================================
 
 
 # --------------------------------------
 # --- Create Local Admin ---
+
+$isInstalled = Get-GitecRegistryValue -SubPath "Client" -Name "GITECOPS"
 
 try {
     $adminUser = "cteadmin"
@@ -134,26 +136,58 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 }
 
 # ==========================================
+
+if($null -eq $isInstalled) {
+    Write-Log "GITECOPS is not installed." -Level "INFO"
+
+    $oldDirs = @(
+        "GITEC",
+        "GitecOps",
+        "gitecshell",
+        "gitecshellx"
+    )
+
+    # Remove Old Directory if it exists
+    foreach ($dir in $oldDirs) {
+        $oldDirPath = Join-Path "C:/" $dir
+        if (Test-Path $oldDirPath) {
+            Write-Log "Removing old directory $oldDirPath..." -Level "INFO"
+            Remove-Item $oldDirPath -Recurse -Force
+        }
+    }
+} else {
+    Write-Log "GITECOPS is already installed." -Level "INFO"
+}
+
+
+# ==========================================
 # Check for git repository and clone if not present
 
 if (-not (Test-Path $repoName)) {
     Write-Log "Cloning repository from $repoUrl..." -Level "INFO"
     try {
+        Set-Location "C:/"
         git clone $repoUrl
         Write-Log "Repository cloned successfully." -Level "INFO"
+        New-GitecRegistryKey -SubPath "Client" -Name "GIT" -Value "1"
     } catch {
         Write-Log "Failed to clone repository: $_" -Level "ERROR"
+        New-GitecRegistryKey -SubPath "Client" -Name "GIT" -Value "0"
         exit 6
     }
-} else {
-    Write-Log "Repository already exists. Skipping clone." -Level "INFO"
 }
 
 # ==========================================
 #  Make sure git repo is up to date
 # ==========================================
 
-$localVersion = Get-LocalRepoVersion -RepoPath $baseRoot -Ref "HEAD" -Short
-$remoteVersion = Get-RemoteRepoVersion -RepoPath $baseRoot -Branch "main" -Short
-Write-Host "Local Version: $localVersion" -ForegroundColor Green
-Write-Host "Remote Version: $remoteVersion" -ForegroundColor Green
+try {
+    Set-Location "C:/"
+    git -C $baseRoot pull origin main
+} catch {
+    Write-Log "Failed to update repository: $_" -Level "ERROR"
+    exit 7
+}
+
+
+

@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
     Provides helper functions to manage credentials stored in Windows Credential Manager
-    under the "GITEC:" namespace.
+    under the "GitecOps:" namespace.
 
 .DESCRIPTION
     This module allows secure storage, retrieval, and removal of credentials using the
     native cmdkey.exe tool and CredentialManager PowerShell module. All credentials are
-    stored under the prefix "GITEC:" for organizational consistency.
+    stored under the prefix "GitecOps:" for organizational consistency.
 
     Optional integration with LoggingHelper.psm1 provides consistent output and diagnostics.
 
@@ -24,7 +24,7 @@
     Remove-GitecCredential -Name "EntraAdmin"
 
 .NOTES
-    - Credentials are stored in Windows Credential Manager under the "GITEC:" prefix.
+    - Credentials are stored in Windows Credential Manager under the "GitecOps:" prefix.
     - Requires the `CredentialManager` module to retrieve credentials.
     - Compatible with both user and system context (cmdkey supports system storage).
     - LoggingHelper.psm1 (optional) enables structured logging for all operations.
@@ -49,7 +49,7 @@ function Set-GitecCredential {
         [Parameter(Mandatory)][System.Management.Automation.PSCredential]$Credential
     )
 
-    $target = "GITEC:$Name"
+    $target = "GitecOps:$Name"
 
     try {
         cmdkey.exe /add:$target /user:$Credential.UserName /pass:($Credential.GetNetworkCredential().Password) | Out-Null
@@ -66,7 +66,7 @@ function Get-GitecCredential {
         [Parameter(Mandatory)][string]$Name
     )
 
-    $target = "GITEC:$Name"
+    $target = "GitecOps:$Name"
 
     try {
         if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
@@ -96,7 +96,7 @@ function Remove-GitecCredential {
         [Parameter(Mandatory)][string]$Name
     )
 
-    $target = "GITEC:$Name"
+    $target = "GitecOps:$Name"
 
     try {
         cmdkey.exe /delete:$target | Out-Null

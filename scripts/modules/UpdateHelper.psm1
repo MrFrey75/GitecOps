@@ -3,7 +3,7 @@
     Checks for, installs, and monitors Windows Updates using the COM-based Microsoft Update API.
 
 .DESCRIPTION
-    This module provides GITEC-friendly PowerShell functions for querying and installing pending
+    This module provides GitecOps-friendly PowerShell functions for querying and installing pending
     Windows updates. It supports optional inclusion of driver updates, silent installs,
     and automatic reboots. It also detects whether a system reboot is pending based on registry keys.
 

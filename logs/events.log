@@ -48,34 +48,34 @@
 2025-05-05 11:15:16 [ERROR] failure
 2025-05-05 11:15:19 [DEBUG] User 'cteadmin' already exists.
 2025-05-05T11:45:32 | Starting directory existence check...
-2025-05-05T11:45:32 | Found: C:\GITEC
-2025-05-05T11:45:32 | Found: C:\GITEC\logs
-2025-05-05T11:45:32 | Missing: C:\GITEC\data
-2025-05-05T11:45:32 | Missing: C:\GITEC\pack
-2025-05-05T11:45:32 | Found: C:\GITEC\scripts
-2025-05-05T11:45:32 | Found: C:\GITEC\utilities
-2025-05-05T11:45:32 | Found: C:\GITEC\assets
-2025-05-05T11:45:32 | Missing: C:\GITEC\intune
+2025-05-05T11:45:32 | Found: C:\GitecOps
+2025-05-05T11:45:32 | Found: C:\GitecOps\logs
+2025-05-05T11:45:32 | Missing: C:\GitecOps\data
+2025-05-05T11:45:32 | Missing: C:\GitecOps\pack
+2025-05-05T11:45:32 | Found: C:\GitecOps\scripts
+2025-05-05T11:45:32 | Found: C:\GitecOps\utilities
+2025-05-05T11:45:32 | Found: C:\GitecOps\assets
+2025-05-05T11:45:32 | Missing: C:\GitecOps\intune
 2025-05-05T11:45:32 | 3 director(ies) missing. Trigger remediation.
 2025-05-05T11:45:38 | Starting remediation - creating missing directories...
-2025-05-05T11:45:38 | Directory already exists: C:\GITEC
-2025-05-05T11:45:38 | Directory already exists: C:\GITEC\logs
-2025-05-05T11:45:38 | Created directory: C:\GITEC\data
-2025-05-05T11:45:38 | Created directory: C:\GITEC\pack
-2025-05-05T11:45:38 | Directory already exists: C:\GITEC\scripts
-2025-05-05T11:45:38 | Directory already exists: C:\GITEC\utilities
-2025-05-05T11:45:38 | Directory already exists: C:\GITEC\assets
-2025-05-05T11:45:38 | Created directory: C:\GITEC\intune
+2025-05-05T11:45:38 | Directory already exists: C:\GitecOps
+2025-05-05T11:45:38 | Directory already exists: C:\GitecOps\logs
+2025-05-05T11:45:38 | Created directory: C:\GitecOps\data
+2025-05-05T11:45:38 | Created directory: C:\GitecOps\pack
+2025-05-05T11:45:38 | Directory already exists: C:\GitecOps\scripts
+2025-05-05T11:45:38 | Directory already exists: C:\GitecOps\utilities
+2025-05-05T11:45:38 | Directory already exists: C:\GitecOps\assets
+2025-05-05T11:45:38 | Created directory: C:\GitecOps\intune
 2025-05-05T11:45:38 | Remediation completed successfully - all directories in place.
 2025-05-05T11:45:44 | Starting directory existence check...
-2025-05-05T11:45:44 | Found: C:\GITEC
-2025-05-05T11:45:44 | Found: C:\GITEC\logs
-2025-05-05T11:45:44 | Found: C:\GITEC\data
-2025-05-05T11:45:44 | Found: C:\GITEC\pack
-2025-05-05T11:45:44 | Found: C:\GITEC\scripts
-2025-05-05T11:45:44 | Found: C:\GITEC\utilities
-2025-05-05T11:45:44 | Found: C:\GITEC\assets
-2025-05-05T11:45:44 | Found: C:\GITEC\intune
+2025-05-05T11:45:44 | Found: C:\GitecOps
+2025-05-05T11:45:44 | Found: C:\GitecOps\logs
+2025-05-05T11:45:44 | Found: C:\GitecOps\data
+2025-05-05T11:45:44 | Found: C:\GitecOps\pack
+2025-05-05T11:45:44 | Found: C:\GitecOps\scripts
+2025-05-05T11:45:44 | Found: C:\GitecOps\utilities
+2025-05-05T11:45:44 | Found: C:\GitecOps\assets
+2025-05-05T11:45:44 | Found: C:\GitecOps\intune
 2025-05-05T11:45:44 | All directories are present. No remediation needed.
 2025-05-05 12:28:29 [INFO] Creating local admin account 'cteadmin'...
 2025-05-05 12:28:38 [INFO] Creating local admin account 'cteadmin'...
@@ -91,3 +91,67 @@
 2025-05-05 12:41:05 [ERROR] failure
 2025-05-05 12:42:11 [ERROR] failure
 2025-05-05 14:18:41 [ERROR] failure
+2025-05-05 15:02:04 [INFO] Attempt 1 : Installing Git via winget...
+2025-05-05 15:02:10 [INFO] Git installed successfully on attempt 1 : git version 2.49.0.windows.1
+2025-05-05 15:02:10 [INFO] Cloning repository from https://github.com/MrFrey75/GitecOps.git...
+2025-05-05 15:02:13 [INFO] Repository cloned successfully.
+2025-05-05 15:02:14 [INFO] Local version is up to date.
+2025-05-05 15:03:15 [INFO] Attempt 1 : Installing Git via winget...
+2025-05-05 15:03:21 [INFO] Git installed successfully on attempt 1 : git version 2.49.0.windows.1
+2025-05-05 15:03:21 [INFO] Cloning repository from https://github.com/MrFrey75/GitecOps.git...
+2025-05-05 15:03:21 [INFO] Repository cloned successfully.
+2025-05-05 15:03:21 [INFO] Local version is up to date.
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\en-US\en-US.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\en-US\en-US.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\MSFT_PackageManagement\MSFT_PackageManagement.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\MSFT_PackageManagement\MSFT_PackageManagement.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\MSFT_PackageManagementSource\MSFT_PackageManagementSource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\DSCResources\MSFT_PackageManagementSource\MSFT_PackageManagementSource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\en-US\en-US.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\en-US\en-US.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\GroupSet\GroupSet.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\GroupSet\GroupSet.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ArchiveResource\MSFT_ArchiveResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ArchiveResource\MSFT_ArchiveResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_EnvironmentResource\MSFT_EnvironmentResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_EnvironmentResource\MSFT_EnvironmentResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_GroupResource\MSFT_GroupResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_GroupResource\MSFT_GroupResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_LogResource\MSFT_LogResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_LogResource\MSFT_LogResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_PackageResource\MSFT_PackageResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_PackageResource\MSFT_PackageResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ProcessResource\MSFT_ProcessResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ProcessResource\MSFT_ProcessResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_RegistryResource\MSFT_RegistryResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_RegistryResource\MSFT_RegistryResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_RoleResource\MSFT_RoleResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_RoleResource\MSFT_RoleResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ScriptResource\MSFT_ScriptResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ScriptResource\MSFT_ScriptResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ServiceResource\MSFT_ServiceResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_ServiceResource\MSFT_ServiceResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_UserResource\MSFT_UserResource.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_UserResource\MSFT_UserResource.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForAll\MSFT_WaitForAll.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForAll\MSFT_WaitForAll.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForAny\MSFT_WaitForAny.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForAny\MSFT_WaitForAny.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForSome\MSFT_WaitForSome.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WaitForSome\MSFT_WaitForSome.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WindowsOptionalFeature\MSFT_WindowsOptionalFeature.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\MSFT_WindowsOptionalFeature\MSFT_WindowsOptionalFeature.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\ProcessSet\ProcessSet.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\ProcessSet\ProcessSet.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\ServiceSet\ServiceSet.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\ServiceSet\ServiceSet.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\WindowsFeatureSet\WindowsFeatureSet.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\WindowsFeatureSet\WindowsFeatureSet.Schema.psm1'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\WindowsOptionalFeatureSet\WindowsOptionalFeatureSet.Schema.mof'
+2025-05-05 15:03:46 [DEBUG]    : PROCESSING RESOURCE FILE: Added 0 type handler functions from  'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\DSCResources\WindowsOptionalFeatureSet\WindowsOptionalFeatureSet.Schema.psm1'
+2025-05-05 15:03:47 [INFO] Attempt 1 : Installing Git via winget...
+2025-05-05 15:03:54 [INFO] Git installed successfully on attempt 1 : git version 2.49.0.windows.1
+2025-05-05 15:03:54 [INFO] Repository already exists. Skipping clone.
+2025-05-05 15:04:29 [INFO] Attempt 1 : Installing Git via winget...
+2025-05-05 15:04:35 [INFO] Git installed successfully on attempt 1 : git version 2.49.0.windows.1
+2025-05-05 15:04:35 [INFO] Repository already exists. Skipping clone.

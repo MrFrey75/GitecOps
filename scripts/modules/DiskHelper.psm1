@@ -8,8 +8,8 @@
     details, and hardware info including SMART health. It supports selective drive
     queries and integrates seamlessly with LoggingHelper.psm1 for consistent reporting.
 
-    All functions are prefixed with "Get-Gitec*" and are intended for system
-    administration, diagnostics, or inventory automation within GITEC environments.
+    All functions are prefixed with "Get-GitecOps*" and are intended for system
+    administration, diagnostics, or inventory automation within GitecOps environments.
 
 .EXAMPLE
     Get-GitecDiskUsage

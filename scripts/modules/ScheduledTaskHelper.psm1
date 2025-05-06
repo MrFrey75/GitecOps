@@ -7,12 +7,12 @@
     It supports multiple trigger types (AtStartup, Daily, OnIdle), forceful recreation of existing tasks,
     running as SYSTEM or current user, and logs all activity if LoggingHelper.psm1 is present.
 
-    All functions are prefixed with "Gitec" for consistency and are designed for use in deployment,
+    All functions are prefixed with "GitecOps" for consistency and are designed for use in deployment,
     automation, and maintenance scenarios.
 
 .EXAMPLE
     New-GitecScheduledTask -TaskName "NightlyCleanup" `
-        -ScriptPath "C:\GITEC\scripts\nightly.ps1" `
+        -ScriptPath "C:\GitecOps\scripts\nightly.ps1" `
         -Trigger "AtStartup" -RunAsCurrentUser -Force
 
     # Creates a task to run nightly.ps1 at startup, recreating if it already exists

@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     This module wraps standard service management operations in friendly, logged commands under the
-    Gitec naming convention. It includes error handling, WMI-based hung service detection, and can
+    GitecOps naming convention. It includes error handling, WMI-based hung service detection, and can
     report service status for diagnostics or automation scripts.
 
     Optional integration with LoggingHelper.psm1 provides structured logs for all actions.

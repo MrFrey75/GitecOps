@@ -11,7 +11,7 @@
     modifying PATH variables in deployment and provisioning scripts.
 
 .EXAMPLE
-    Set-GitecEnvVar -Name "GITEC_PATH" -Value "C:\GITEC" -Scope Machine
+    Set-GitecEnvVar -Name "GITEC_PATH" -Value "C:\GitecOps" -Scope Machine
     # Creates or updates a system-level environment variable.
 
 .EXAMPLE

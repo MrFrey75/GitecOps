@@ -1,20 +1,20 @@
 <#
 .SYNOPSIS
-    Provides simplified access to the Windows Registry under the GITEC namespace.
+    Provides simplified access to the Windows Registry under the GitecOps namespace.
 
 .DESCRIPTION
     This module offers functions to read, write, create, and delete registry values and keys
-    within `HKLM:\Software\GITEC` or `HKCU:\Software\GITEC`. Designed for internal system config,
-    state flags, and preferences across the GITEC admin toolset.
+    within `HKLM:\Software\GitecOps` or `HKCU:\Software\GitecOps`. Designed for internal system config,
+    state flags, and preferences across the GitecOps admin toolset.
 
-    All entries are automatically scoped under "Software\GITEC" to prevent conflicts
+    All entries are automatically scoped under "Software\GitecOps" to prevent conflicts
     and standardize configuration persistence.
 
     Optional integration with LoggingHelper.psm1 enables structured diagnostics.
 
 .EXAMPLE
     Set-GitecRegistryValue -SubPath "Client" -Name "LastUpdated" -Value "2025-05-05"
-    # Sets a string value under HKLM:\Software\GITEC\Client
+    # Sets a string value under HKLM:\Software\GitecOps\Client
 
 .EXAMPLE
     Get-GitecRegistryValue -SubPath "Client" -Name "LastUpdated"
@@ -26,11 +26,11 @@
 
 .EXAMPLE
     New-GitecRegistryKey -SubPath "Client\Config" -Hive HKCU
-    # Creates a new key under HKCU:\Software\GITEC\Client\Config
+    # Creates a new key under HKCU:\Software\GitecOps\Client\Config
 
 .NOTES
     - Only `HKLM` and `HKCU` are supported as valid hives.
-    - All keys are rooted at Software\GITEC to avoid pollution.
+    - All keys are rooted at Software\GitecOps to avoid pollution.
     - LoggingHelper.psm1 is optional but strongly recommended.
     - Value types are stored as REG_SZ (string); expand support if needed.
     - Use for internal state/config management, not general-purpose registry editing.
@@ -56,7 +56,7 @@ function Get-GitecRegistryValue {
         [ValidateSet("HKLM", "HKCU")][string]$Hive = "HKLM"
     )
 
-    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GITEC" } else { "HKCU:\Software\GITEC" }
+    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GitecOps" } else { "HKCU:\Software\GitecOps" }
     $path = Join-Path $base $SubPath
 
     try {
@@ -77,7 +77,7 @@ function Set-GitecRegistryValue {
         [ValidateSet("HKLM", "HKCU")][string]$Hive = "HKLM"
     )
 
-    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GITEC" } else { "HKCU:\Software\GITEC" }
+    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GitecOps" } else { "HKCU:\Software\GitecOps" }
     $path = Join-Path $base $SubPath
 
     try {
@@ -101,7 +101,7 @@ function Remove-GitecRegistryValue {
         [ValidateSet("HKLM", "HKCU")][string]$Hive = "HKLM"
     )
 
-    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GITEC" } else { "HKCU:\Software\GITEC" }
+    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GitecOps" } else { "HKCU:\Software\GitecOps" }
     $path = Join-Path $base $SubPath
 
     try {
@@ -119,7 +119,7 @@ function New-GitecRegistryKey {
         [ValidateSet("HKLM", "HKCU")][string]$Hive = "HKLM"
     )
 
-    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GITEC" } else { "HKCU:\Software\GITEC" }
+    $base = if ($Hive -eq "HKLM") { "HKLM:\Software\GitecOps" } else { "HKCU:\Software\GitecOps" }
     $path = Join-Path $base $SubPath
 
     try {
