@@ -41,34 +41,35 @@ if ($null -eq $?) {
 
 try{
 
+    Write-Info "Performing weekly tasks..."
+
+    # Example logic: Install Windows updates
+    try{
+        if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
+            Write-Info "Installing PSWindowsUpdate module..."
+            Install-PackageProvider -Name NuGet -Force -Scope CurrentUser -ErrorAction SilentlyContinue
+            Install-Module -Name PSWindowsUpdate -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
+        }
+    
+        # Import the module
+        Import-Module PSWindowsUpdate -Force -ErrorAction Stop
+        Write-Info "PSWindowsUpdate module imported successfully."
+    
+        $windowsUpdates = Get-WindowsUpdate -AcceptAll -IgnoreReboot
+        if ($windowsUpdates) {
+            Write-Info "Installing Windows updates..."
+            Install-WindowsUpdate -AcceptAll -IgnoreReboot
+        } else {
+            Write-Info "No Windows updates available."
+        }
+    } catch{
+        Write-Error "Failed to install Windows updates: $_"
+    }
+
     # Example logic: Perform weekly maintenance tasks
     Write-Info "Performing weekly maintenance tasks..."
-    
 
-    # ===========================================================
-    # Update system packages
-    # ===========================================================
-    $packages = @("git.exe", "powershell.msi")
-    foreach ($package in $packages) {
-        $installed = Get-Package -Name $package -ErrorAction SilentlyContinue
-        if ($null -eq $installed) {
-            Write-Info "Installing package: $package"
-            Install-Package -Name $package -Force
-        } else {
-            Write-Info "Package $package is already installed."
-        }
-    }
 
-    # ===========================================================
-    # Check for Windows updates
-    # ===========================================================
-    $windowsUpdates = Get-WindowsUpdate -AcceptAll -IgnoreReboot
-    if ($windowsUpdates) {
-        Write-Info "Installing Windows updates..."
-        Install-WindowsUpdate -AcceptAll -IgnoreReboot
-    } else {
-        Write-Info "No Windows updates available."
-    }
 
     # Add your weekly tasks here
     # For example, clean up old logs, update software, etc.

@@ -7,6 +7,12 @@ param (
     [string]$adminPassword  = "S1lv#rBaCk!1"
 )
 
+# Ensure script runs as Administrator
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host "Please run this script as Administrator." -ForegroundColor Red
+    exit 1
+}
+
 # Construct module paths
 $moduleDirectory      = Join-Path $BaseDir "scripts\modules"
 $loggingModulePath    = Join-Path $moduleDirectory "LoggingHelper.psm1"
@@ -68,6 +74,22 @@ function Set-TaskAction {
     Write-Host "Scheduled task '$fullTaskName' created successfully."
 }
 
+function Install-Git-WithWinget {
+    Write-Host "Using winget to install or upgrade Git..."
+    try {
+        $gitInstalled = winget list --name Git.Git -q | Select-String "Git.Git"
+        if ($gitInstalled) {
+            winget upgrade --id Git.Git --silent --accept-package-agreements --accept-source-agreements
+        } else {
+            winget install --id Git.Git --silent --accept-package-agreements --accept-source-agreements
+        }
+    } catch {
+        Write-Host "Failed using winget: $_" -ForegroundColor Yellow
+        return $false
+    }
+    return $true
+}
+
 # Import modules
 Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
 Import-Module -Name $loggingModulePath -Force -ErrorAction Stop
@@ -88,10 +110,21 @@ if ($null -eq $?) {
 try {
     Write-Info "Performing initialization tasks..."
 
-    # Add module path if missing
-    if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
-        $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
-        Write-Info "Module directory added to PSModulePath."
+    try{
+        # install git
+        Install-Git-WithWinget
+    } catch{
+        Write-Error "Failed to install git: $_"
+    }
+
+    try{
+        # Add module path if missing
+        if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
+            $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
+            Write-Info "Module directory added to PSModulePath."
+        }
+    } catch {
+        Write-Error "Failed to add module directory to PSModulePath: $_"
     }
 
     # Create local admin user

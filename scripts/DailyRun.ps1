@@ -5,53 +5,48 @@ param (
     [string]$LogName = "DailyRun"
 )
 
-# Construct module path using Join-Path for cross-platform compatibility
-$moduleDirectory = Join-Path -Path $BaseDir -ChildPath "scripts\modules"
-$loggingModulePath = Join-Path -Path $moduleDirectory -ChildPath "LoggingHelper.psm1"
-$utilityModulePath = Join-Path -Path $moduleDirectory -ChildPath "Utilities.psm1"
-$registryModulePath = Join-Path -Path $moduleDirectory -ChildPath "RegistryHelper.psm1"
+# Initialize module paths
+$moduleDirectory       = Join-Path $BaseDir "scripts\modules"
+$loggingModulePath     = Join-Path $moduleDirectory "LoggingHelper.psm1"
+$utilityModulePath     = Join-Path $moduleDirectory "Utilities.psm1"
+$registryModulePath    = Join-Path $moduleDirectory "RegistryHelper.psm1"
 
-# Add module directory to PSModulePath if not already present
+# Add to PSModulePath if not already included
 if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
     $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
 }
 
-# Import logging module and configure settings
+# Import modules
 Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
 Import-Module -Name $loggingModulePath -Force -ErrorAction Stop
-Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
 Import-Module -Name $registryModulePath -Force -ErrorAction Stop
 
+# Set up logging
 Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
-
-# Start log
 Write-Info "Starting Daily Run script..."
 
-Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String
-if ($null -eq $?) {
+# Record last run timestamp
+if (-not (Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String)) {
     Write-Error "Failed to set registry key '$RegKey'."
 } else {
     Write-Info "Registry key '$RegKey' set successfully."
 }
 
-# ===================================================================
-# Daily Run script logic goes here
-# ===================================================================
-
-try{
-
-    # Example logic: Perform daily maintenance tasks
+# ------------------------------------------
+# Run Daily Tasks
+# ------------------------------------------
+try {
     Write-Info "Performing daily maintenance tasks..."
-    
-    # Add your daily tasks here
-    # For example, clean up old logs, update software, etc.
-    
-    Write-Info "Daily maintenance tasks completed successfully."
 
-}
-catch{
+    # Toggle dry run mode globally here:
+    $dryRunMode = $true
+
+    Invoke-DiskSpaceCleanup -DryRun:$dryRunMode
+    Remove-InactiveUserProfiles -DryRun:$dryRunMode
+
+    Write-Info "Daily maintenance tasks completed successfully."
+} catch {
     Write-Error "An error occurred during Daily Run: $_"
-}
-finally{
+} finally {
     Write-Info "Daily Run script completed."
 }
