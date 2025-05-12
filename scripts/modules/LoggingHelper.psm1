@@ -49,8 +49,9 @@ function Set-GitecLogSettings {
     if (-not (Test-Path $script:LogRoot)) {
         New-Item -ItemType Directory -Path $script:LogRoot -Force | Out-Null
     }
-
-    New-GitecFile -Path (Get-GitecLogFilePath)
+    if (-not (Test-Path (Join-Path $script:LogRoot "$($script:LogName).log"))) {
+        New-GitecFile -Path (Join-Path $script:LogRoot "$($script:LogName).log")
+    }
 }
 
 function Get-GitecLogFilePath {
