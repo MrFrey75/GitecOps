@@ -38,6 +38,7 @@ if ($null -eq $?) {
 # Weekly Run script logic goes here
 # ===================================================================
 
+
 try{
 
     # Example logic: Perform weekly maintenance tasks
@@ -47,7 +48,7 @@ try{
     # ===========================================================
     # Update system packages
     # ===========================================================
-    $packages = @("git", "powershell")
+    $packages = @("git.exe", "powershell.msi")
     foreach ($package in $packages) {
         $installed = Get-Package -Name $package -ErrorAction SilentlyContinue
         if ($null -eq $installed) {
