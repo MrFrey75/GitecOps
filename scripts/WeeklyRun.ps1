@@ -50,13 +50,18 @@ try{
     # ===========================================================
     $packages = @("git.exe", "powershell.msi")
     foreach ($package in $packages) {
-        $installed = Get-Package -Name $package -ErrorAction SilentlyContinue
-        if ($null -eq $installed) {
-            Write-Info "Installing package: $package"
-            Install-Package -Name $package -Force
-        } else {
-            Write-Info "Package $package is already installed."
+        try{
+            $installed = Get-Package -Name $package -ErrorAction SilentlyContinue
+            if ($null -eq $installed) {
+                Write-Info "Installing package: $package"
+                Install-Package -Name $package -Force
+            } else {
+                Write-Info "Package $package is already installed."
+            }
+        } catch{
+            Write-Error "Failed to update package '$package': $_"
         }
+
     }
 
     # ===========================================================
