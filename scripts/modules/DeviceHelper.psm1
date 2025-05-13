@@ -85,3 +85,22 @@ function Test-CTEAlternateFormat {
         return $false
     }
 }
+
+function Get-NameParts {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$DeviceName
+    )
+
+    if (-not (Test-DeviceNameFormat -DeviceName $DeviceName)) {
+        Write-Error "Invalid device name format: $DeviceName"
+        return $null
+    }
+
+    $parts = @{
+        Room  = ($DeviceName.Split('-')[1] -replace '\D', '')
+        Asset = ($DeviceName.Split('-')[2] -replace '\D', '')
+    }
+    return $parts
+}

@@ -5,16 +5,60 @@ param (
     [string]$LogName = "StartUp"
 )
 
-#  REMOVE
-Copy-Item -Path "D:\GitecOps\scripts\*" -Destination "C:\GitecOps\scripts\" -Recurse -Force
-#  REMOVE
+# Construct module paths
+$scriptDirectory    = Join-Path $BaseDir "scripts"
+$moduleDirectory     = Join-Path $scriptDirectory "modules"
+$asetsDirectory     = Join-Path $scriptDirectory "assets"
+$loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
+$utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
+$registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
 
-# Module paths
-$moduleDirectory = Join-Path -Path $BaseDir -ChildPath "scripts\modules"
-$loggingModulePath = Join-Path $moduleDirectory "LoggingHelper.psm1"
-$utilityModulePath = Join-Path $moduleDirectory "Utilities.psm1"
-$registryModulePath = Join-Path $moduleDirectory "RegistryHelper.psm1"
-$deviceModulePath = Join-Path $moduleDirectory "DeviceHelper.psm1"
+#  REMOVE === vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
+
+function Copy-ToProd {
+    param (
+        [Parameter(Mandatory = $true)][string]$SourcePath,
+        [Parameter(Mandatory = $true)][string]$DestinationPath
+    )
+
+    if (-not (Test-Path $SourcePath)) {
+        Write-Error "Source path '$SourcePath' does not exist."
+        return
+    }
+    if (-not (Test-Path $DestinationPath)) {
+        Write-Info "Destination path '$DestinationPath' does not exist. Creating..."
+        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
+    }
+
+    Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
+        try {
+            $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
+            $targetPath = Join-Path $DestinationPath $relativePath
+
+            if ($_.PSIsContainer) {
+                if (-not (Test-Path $targetPath)) {
+                    New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
+                    Write-Info "Created directory: $targetPath"
+                }
+            } else {
+                $targetDir = Split-Path $targetPath -Parent
+                if (-not (Test-Path $targetDir)) {
+                    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+                }
+                Copy-Item -Path $_.FullName -Destination $targetPath -Force
+                Write-Info "Copied: $($_.FullName) → $targetPath"
+            }
+        } catch {
+            Write-Warning "Error copying '$($_.FullName)': $_"
+        }
+    }
+}
+
+Copy-ToProd -SourcePath "D:\GitecOps\scripts\modules" -DestinationPath $moduleDirectory
+Copy-ToProd -SourcePath "D:\GitecOps\assets" -DestinationPath $asetsDirectory
+Copy-ToProd -SourcePath "D:\GitecOps\assets\MeshCentral" -DestinationPath (Join-Path $asetsDirectory "MeshCentral")
+
+#  REMOVE === ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 # Add to PSModulePath if not already there
 if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {

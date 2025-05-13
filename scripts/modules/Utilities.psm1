@@ -22,8 +22,7 @@ function Add-ToPSModulePath {
 
 function Invoke-DiskSpaceCleanup {
     param (
-        [string]$TempPath = "C:\Windows\Temp",
-        [switch]$DryRun
+        [string]$TempPath = "C:\Windows\Temp"
     )
 
     Write-Info "Checking disk space on drive C:..."
@@ -39,15 +38,9 @@ function Invoke-DiskSpaceCleanup {
             Write-Warning "Disk remaining below 20 GB. Cleanup recommended."
 
             if (Test-Path $TempPath) {
-                if ($DryRun) {
-                    Write-Warning "DRY RUN: Would remove contents of $TempPath"
-                    Get-ChildItem "$TempPath\*" -Recurse -Force -ErrorAction SilentlyContinue |
-                        Select-Object FullName, LastWriteTime | Format-Table -AutoSize
-                } else {
-                    Write-Info "Cleaning $TempPath..."
-                    Remove-Item "$TempPath\*" -Recurse -Force -ErrorAction SilentlyContinue
-                    Write-Info "Temporary files cleaned up."
-                }
+                Write-Info "Cleaning $TempPath..."
+                Remove-Item "$TempPath\*" -Recurse -Force -ErrorAction SilentlyContinue
+                Write-Info "Temporary files cleaned up."
             } else {
                 Write-Error "Temp path '$TempPath' not found."
             }
@@ -61,15 +54,14 @@ function Invoke-DiskSpaceCleanup {
     }
 }
 
-function Clean-OldLogs {
+function Remove-OldLogs {
     [CmdletBinding()]
     param (
         [string]$LogDir = "C:\GitecOps\Logs",
-        [int]$Days = 30,
-        [switch]$DryRun
+        [int]$Days = 30
     )
 
-    Write-Info "Cleaning logs older than $Days days in '$LogDir'..."
+    Write-Info "Removing logs older than $Days days in '$LogDir'..."
 
     try {
         if (-not (Test-Path $LogDir)) {
@@ -83,12 +75,8 @@ function Clean-OldLogs {
                    Where-Object { $_.LastWriteTime -lt $threshold }
 
         foreach ($log in $oldLogs) {
-            if ($DryRun) {
-                Write-Warning "DRY RUN: Would remove $($log.FullName)"
-            } else {
-                Remove-Item -LiteralPath $log.FullName -Force -ErrorAction SilentlyContinue
-                Write-Info "Deleted $($log.FullName)"
-            }
+            Remove-Item -LiteralPath $log.FullName -Force -ErrorAction SilentlyContinue
+            Write-Info "Deleted $($log.FullName)"
         }
 
         Write-Info "Log cleanup complete. $($oldLogs.Count) files processed."
@@ -97,38 +85,15 @@ function Clean-OldLogs {
     }
 }
 
-function Update-InstalledApps {
-    [CmdletBinding()]
-    param (
-        [switch]$DryRun
-    )
 
-    Write-Info "Checking for application updates..."
-
-    # Placeholder: Extend this to real software sources or package managers
-    $apps = @("7-Zip", "VLC media player", "Google Chrome")
-
-    foreach ($app in $apps) {
-        if ($DryRun) {
-            Write-Warning "DRY RUN: Would check/update $app"
-        } else {
-            Write-Info "Simulated update for: $app"
-            # Real logic might invoke winget, Chocolatey, or vendor installers
-        }
-    }
-
-    Write-Info "Application update process completed."
-}
-
-function Rotate-Snapshots {
+function Set-Snapshots {
     [CmdletBinding()]
     param (
         [string]$SnapshotPath = "C:\GitecOps\Snapshots",
-        [int]$MaxSnapshots = 5,
-        [switch]$DryRun
+        [int]$MaxSnapshots = 5
     )
 
-    Write-Info "Rotating snapshots in '$SnapshotPath'..."
+    Write-Info "Managing snapshots in '$SnapshotPath'..."
 
     try {
         if (-not (Test-Path $SnapshotPath)) {
@@ -147,12 +112,8 @@ function Rotate-Snapshots {
         $toDelete = $snapshots | Select-Object -Skip $MaxSnapshots
 
         foreach ($snap in $toDelete) {
-            if ($DryRun) {
-                Write-Warning "DRY RUN: Would delete snapshot $($snap.FullName)"
-            } else {
-                Remove-Item -LiteralPath $snap.FullName -Recurse -Force -ErrorAction SilentlyContinue
-                Write-Info "Deleted snapshot: $($snap.FullName)"
-            }
+            Remove-Item -LiteralPath $snap.FullName -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Info "Deleted snapshot: $($snap.FullName)"
         }
 
         Write-Info "Snapshot rotation complete."
@@ -168,8 +129,7 @@ function Backup-Configs {
             "C:\GitecOps\config.json",
             "C:\GitecOps\settings.ini"
         ),
-        [string]$BackupDir = "C:\GitecOps\Backups",
-        [switch]$DryRun
+        [string]$BackupDir = "C:\GitecOps\Backups"
     )
 
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
@@ -179,27 +139,18 @@ function Backup-Configs {
 
     try {
         if (-not (Test-Path $BackupDir)) {
-            if ($DryRun) {
-                Write-Warning "DRY RUN: Would create backup directory '$BackupDir'"
-            } else {
-                New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
-            }
+            New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
         }
 
-        if (-not $DryRun) {
-            New-Item -ItemType Directory -Path $backupTarget -Force | Out-Null
-        }
+        New-Item -ItemType Directory -Path $backupTarget -Force | Out-Null
 
         foreach ($path in $PathsToBackup) {
             if (Test-Path $path) {
                 $dest = Join-Path $backupTarget (Split-Path $path -Leaf)
 
-                if ($DryRun) {
-                    Write-Warning "DRY RUN: Would copy '$path' to '$dest'"
-                } else {
-                    Copy-Item -Path $path -Destination $dest -Force
-                    Write-Info "Backed up: $path"
-                }
+                Copy-Item -Path $path -Destination $dest -Force
+                Write-Info "Backed up: $path"
+
             } else {
                 Write-Warning "Config path not found: $path"
             }
@@ -210,3 +161,48 @@ function Backup-Configs {
         Write-Error "Backup failed: $_"
     }
 }
+
+function Install-MeshAgent {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][string]$Room
+    )
+
+    # Validate the Room parameter
+    if (-not $Room) {
+        Write-Error "Room parameter is required."
+        return
+    }
+
+    # Check if the Room parameter is in the correct format
+    if ($Room -notmatch '^\d{3}$') {
+        Write-Error "Invalid Room format. Expected 3 digits."
+        return
+    }
+
+    #check if file exists
+    if (-not (Test-Path "C:\Program Files\Mesh Agent\MeshAgent.exe")) {
+        Write-Error "Mesh Agent already exists Room: $Room"
+        return
+    }
+
+
+    Write-Info "Installing Mesh Agent for Room: $Room..."
+
+    try {
+        # Construct the path to the Mesh Agent installer
+        $meshAgentPath = "C:\GitecOps\assets\MeshCentral\meshagent64-$($Room -replace '\D', '').exe"
+
+        if (-not (Test-Path $meshAgentPath)) {
+            Write-Warning "Mesh Agent not found at $meshAgentPath"
+            return
+        }
+
+        Start-Process -FilePath $meshAgentPath -ArgumentList "/install" -Wait
+        Write-Info "Mesh Agent installed successfully from $meshAgentPath"
+    } catch {
+        Write-Error "Failed to install Mesh Agent: $_"
+    }
+}
+
+
