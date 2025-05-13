@@ -5,48 +5,54 @@ param (
     [string]$LogName = "DailyRun"
 )
 
-# Initialize module paths
-$moduleDirectory       = Join-Path $BaseDir "scripts\modules"
-$loggingModulePath     = Join-Path $moduleDirectory "LoggingHelper.psm1"
-$utilityModulePath     = Join-Path $moduleDirectory "Utilities.psm1"
-$registryModulePath    = Join-Path $moduleDirectory "RegistryHelper.psm1"
+#  REMOVE
+Copy-Item -Path "D:\GitecOps\scripts\*" -Destination "C:\GitecOps\scripts\" -Recurse -Force
+#  REMOVE
 
-# Add to PSModulePath if not already included
-if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
-    $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
-}
+# Construct module paths
+$moduleDirectory     = Join-Path $BaseDir "scripts\modules"
+$loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
+$utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
+$registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
 
-# Import modules
-Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
-Import-Module -Name $loggingModulePath -Force -ErrorAction Stop
-Import-Module -Name $registryModulePath -Force -ErrorAction Stop
+Write-Host "Module Directory: $moduleDirectory"
+Write-Host "Logging Module Path: $loggingModulePath"
+Write-Host "Utility Module Path: $utilityModulePath"
+Write-Host "Registry Module Path: $registryModulePath"
 
-# Set up logging
+
+# Import required modules
+Import-Module -Name $utilityModulePath   -Force -ErrorAction Stop
+Import-Module -Name $loggingModulePath   -Force -ErrorAction Stop
+Import-Module -Name $registryModulePath  -Force -ErrorAction Stop
+
+# Configure logging
 Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
-Write-Info "Starting Daily Run script..."
+Write-Info "=== DailyRun.ps1 started ==="
 
-# Record last run timestamp
-if (-not (Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String)) {
-    Write-Error "Failed to set registry key '$RegKey'."
-} else {
+# Record the last run timestamp
+try {
+    Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String
     Write-Info "Registry key '$RegKey' set successfully."
+} catch {
+    Write-Error "Error setting registry key '$RegKey': $_"
 }
 
-# ------------------------------------------
-# Run Daily Tasks
-# ------------------------------------------
+# ---------------------------------------
+# Run Daily Maintenance Tasks
+# ---------------------------------------
 try {
-    Write-Info "Performing daily maintenance tasks..."
+    Write-Info "Beginning daily maintenance tasks..."
 
-    # Toggle dry run mode globally here:
-    $dryRunMode = $true
+    # DRY RUN toggle for testing
+    $dryRunMode = $false
 
-    Invoke-DiskSpaceCleanup -DryRun:$dryRunMode
-    Remove-InactiveUserProfiles -DryRun:$dryRunMode
+    Invoke-DiskSpaceCleanup     -DryRun:$dryRunMode
 
-    Write-Info "Daily maintenance tasks completed successfully."
+    Write-Info "All maintenance tasks completed successfully."
+
 } catch {
-    Write-Error "An error occurred during Daily Run: $_"
+    Write-Error "Unhandled error during maintenance tasks: $_"
 } finally {
-    Write-Info "Daily Run script completed."
+    Write-Info "=== DailyRun.ps1 complete ==="
 }

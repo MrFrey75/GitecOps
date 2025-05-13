@@ -5,6 +5,10 @@ param (
     [string]$LogName = "StartUp"
 )
 
+#  REMOVE
+Copy-Item -Path "D:\GitecOps\scripts\*" -Destination "C:\GitecOps\scripts\" -Recurse -Force
+#  REMOVE
+
 # Module paths
 $moduleDirectory = Join-Path -Path $BaseDir -ChildPath "scripts\modules"
 $loggingModulePath = Join-Path $moduleDirectory "LoggingHelper.psm1"
@@ -22,6 +26,14 @@ Import-Module $utilityModulePath -Force -ErrorAction Stop
 Import-Module $loggingModulePath -Force -ErrorAction Stop
 Import-Module $registryModulePath -Force -ErrorAction Stop
 Import-Module $deviceModulePath -Force -ErrorAction Stop
+
+# Record the last run timestamp
+try {
+    Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String
+    Write-Info "Registry key '$RegKey' set successfully."
+} catch {
+    Write-Error "Error setting registry key '$RegKey': $_"
+}
 
 Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
 Write-Info "Starting Start Up script..."

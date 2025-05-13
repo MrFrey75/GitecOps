@@ -7,6 +7,10 @@ param (
     [string]$adminPassword  = "S1lv#rBaCk!1"
 )
 
+#  REMOVE
+Copy-Item -Path "D:\GitecOps\scripts\*" -Destination "C:\GitecOps\scripts\" -Recurse -Force
+#  REMOVE
+
 # Ensure script runs as Administrator
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "Please run this script as Administrator." -ForegroundColor Red
@@ -94,6 +98,14 @@ function Install-Git-WithWinget {
 Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
 Import-Module -Name $loggingModulePath -Force -ErrorAction Stop
 Import-Module -Name $registryModulePath -Force -ErrorAction Stop
+
+# Record the last run timestamp
+try {
+    Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String
+    Write-Info "Registry key '$RegKey' set successfully."
+} catch {
+    Write-Error "Error setting registry key '$RegKey': $_"
+}
 
 # Configure logging
 Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
