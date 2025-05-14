@@ -38,13 +38,6 @@ try {
 try {
     Write-Info "Beginning daily maintenance tasks..."
 
-    $DeviceName = $Env:COMPUTERNAME
-    $Room = ($DeviceName.Split("-")[1] -replace '\D', '')
-    
-    if ($Room -match '^\d{3}$') {
-        Install-MeshAgent -Room $Room
-    }
-
     Invoke-DiskSpaceCleanup
 
     Write-Info "All maintenance tasks completed successfully."
