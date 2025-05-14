@@ -4,7 +4,9 @@ param (
     [string]$RegKey         = "InitLastRun",
     [string]$LogName        = "Initialization",
     [string]$adminUser      = "cteadmin",
-    [string]$adminPassword  = "S1lv#rBaCk!1"
+    [string]$adminPassword  = "S1lv#rBaCk!1",
+
+    [string]$GitRepository = "https://github.com/MrFrey75/GitecOps.git"
 )
 
 # Ensure script runs as Administrator
@@ -29,36 +31,23 @@ function Copy-ToProd {
         [Parameter(Mandatory = $true)][string]$DestinationPath
     )
 
-    if (-not (Test-Path $SourcePath)) {
-        Write-Error "Source path '$SourcePath' does not exist."
-        return
-    }
-    if (-not (Test-Path $DestinationPath)) {
-        Write-Info "Destination path '$DestinationPath' does not exist. Creating..."
-        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
-    }
-
     Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
-        try {
-            $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
-            $targetPath = Join-Path $DestinationPath $relativePath
 
-            if ($_.PSIsContainer) {
-                if (-not (Test-Path $targetPath)) {
-                    New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-                    Write-Info "Created directory: $targetPath"
-                }
-            } else {
-                $targetDir = Split-Path $targetPath -Parent
-                if (-not (Test-Path $targetDir)) {
-                    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-                }
-                Copy-Item -Path $_.FullName -Destination $targetPath -Force
-                Write-Info "Copied: $($_.FullName) → $targetPath"
+        $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
+        $targetPath = Join-Path $DestinationPath $relativePath
+
+        if ($_.PSIsContainer) {
+            if (-not (Test-Path $targetPath)) {
+                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
             }
-        } catch {
-            Write-Warning "Error copying '$($_.FullName)': $_"
+        } else {
+            $targetDir = Split-Path $targetPath -Parent
+            if (-not (Test-Path $targetDir)) {
+                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+            }
+            Copy-Item -Path $_.FullName -Destination $targetPath -Force
         }
+
     }
 }
 
@@ -123,18 +112,59 @@ function Set-TaskAction {
     Write-Info "Scheduled task '$fullTaskName' created successfully."
 }
 
-function Install-Git-WithWinget {
+function Install-GitWithWinget {
     Write-Info "Using winget to install or upgrade Git..."
     try {
         $gitInstalled = winget list --name Git.Git -q | Select-String "Git.Git"
         if ($gitInstalled) {
             winget upgrade --id Git.Git --silent --accept-package-agreements --accept-source-agreements
+            Write-Info "Git upgrade completed successfully."
         } else {
             winget install --id Git.Git --silent --accept-package-agreements --accept-source-agreements
+            Write-Info "Git installation completed successfully."
         }
     } catch {
         Write-Info "Failed using winget: $_" -ForegroundColor Yellow
         return $false
+    }
+    return $true
+}
+
+function Install-GitClone{
+    Write-Host "Using Git to clone the repository..."
+
+    # check if repo exists
+    $repoPath = "C:\GitecOps"
+    $repoExists = Test-Path $repoPath
+    if ($repoExists) {
+        # pull latest changes
+        Write-Host "Repository already exists. Pulling latest changes..."
+        try {
+            $location = Get-Location
+            Set-Location -Path $repoPath
+            git reset --hard HEAD
+            git clean -fd
+            git pull --rebase
+            Set-Location -Path $location
+            Write-Info "Repository updated successfully."
+        } catch {
+            Write-Host "Failed to pull latest changes: $_" -ForegroundColor Yellow
+            return $false
+        }
+    } else {
+        # clone the repository
+        Write-Host "Cloning repository..."
+        try {
+            $location = Get-Location
+            Set-Location -Path $repoPath
+            git clone $repoUrl $repoPath
+            Set-Location -Path $location
+            Write-Info "Repository cloned successfully."
+        } catch {
+            Write-Host "Failed to clone repository: $_" -ForegroundColor Yellow
+            return $false
+        }
+        
     }
     return $true
 }
@@ -167,12 +197,9 @@ if ($null -eq $?) {
 try {
     Write-Info "Performing initialization tasks..."
 
-    try{
-        # install git
-        Install-Git-WithWinget
-    } catch{
-        Write-Error "Failed to install git: $_"
-    }
+    Install-GitWithWinget
+    Install-GitClone
+
 
     try{
         # Add module path if missing

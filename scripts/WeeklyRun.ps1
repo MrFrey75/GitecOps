@@ -22,15 +22,6 @@ function Copy-ToProd {
         [Parameter(Mandatory = $true)][string]$DestinationPath
     )
 
-    if (-not (Test-Path $SourcePath)) {
-        Write-Error "Source path '$SourcePath' does not exist."
-        return
-    }
-    if (-not (Test-Path $DestinationPath)) {
-        Write-Info "Destination path '$DestinationPath' does not exist. Creating..."
-        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
-    }
-
     Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
 
         $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')

@@ -23,36 +23,23 @@ function Copy-ToProd {
         [Parameter(Mandatory = $true)][string]$DestinationPath
     )
 
-    if (-not (Test-Path $SourcePath)) {
-        Write-Error "Source path '$SourcePath' does not exist."
-        return
-    }
-    if (-not (Test-Path $DestinationPath)) {
-        Write-Info "Destination path '$DestinationPath' does not exist. Creating..."
-        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
-    }
-
     Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
-        try {
-            $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
-            $targetPath = Join-Path $DestinationPath $relativePath
 
-            if ($_.PSIsContainer) {
-                if (-not (Test-Path $targetPath)) {
-                    New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-                    Write-Info "Created directory: $targetPath"
-                }
-            } else {
-                $targetDir = Split-Path $targetPath -Parent
-                if (-not (Test-Path $targetDir)) {
-                    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-                }
-                Copy-Item -Path $_.FullName -Destination $targetPath -Force
-                Write-Info "Copied: $($_.FullName) → $targetPath"
+        $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
+        $targetPath = Join-Path $DestinationPath $relativePath
+
+        if ($_.PSIsContainer) {
+            if (-not (Test-Path $targetPath)) {
+                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
             }
-        } catch {
-            Write-Warning "Error copying '$($_.FullName)': $_"
+        } else {
+            $targetDir = Split-Path $targetPath -Parent
+            if (-not (Test-Path $targetDir)) {
+                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+            }
+            Copy-Item -Path $_.FullName -Destination $targetPath -Force
         }
+
     }
 }
 
