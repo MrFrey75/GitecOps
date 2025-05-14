@@ -14,41 +14,6 @@ $utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
 $registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
 $deviceModulePath    = Join-Path $moduleDirectory "DeviceHelper.psm1"
 
-
-#  REMOVE === vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
-
-function Copy-ToProd {
-    param (
-        [Parameter(Mandatory = $true)][string]$SourcePath,
-        [Parameter(Mandatory = $true)][string]$DestinationPath
-    )
-
-    Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
-
-        $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
-        $targetPath = Join-Path $DestinationPath $relativePath
-
-        if ($_.PSIsContainer) {
-            if (-not (Test-Path $targetPath)) {
-                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-            }
-        } else {
-            $targetDir = Split-Path $targetPath -Parent
-            if (-not (Test-Path $targetDir)) {
-                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-            }
-            Copy-Item -Path $_.FullName -Destination $targetPath -Force
-        }
-
-    }
-}
-
-Copy-ToProd -SourcePath "D:\GitecOps\scripts\modules" -DestinationPath $moduleDirectory
-Copy-ToProd -SourcePath "D:\GitecOps\assets" -DestinationPath $asetsDirectory
-Copy-ToProd -SourcePath "D:\GitecOps\assets\MeshCentral" -DestinationPath (Join-Path $asetsDirectory "MeshCentral")
-
-#  REMOVE === ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 # Import required modules
 Import-Module -Name $utilityModulePath   -Force -ErrorAction Stop
 Import-Module -Name $loggingModulePath   -Force -ErrorAction Stop
