@@ -8,7 +8,7 @@ param (
 # Construct module paths
 $scriptDirectory    = Join-Path $BaseDir "scripts"
 $moduleDirectory     = Join-Path $scriptDirectory "modules"
-$asetsDirectory     = Join-Path $scriptDirectory "assets"
+# $assetsDirectory     = Join-Path $scriptDirectory "assets"
 $loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
 $utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
 $registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"

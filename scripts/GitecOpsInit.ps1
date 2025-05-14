@@ -17,7 +17,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 # Construct paths
 $scriptDirectory     = Join-Path $BaseDir "scripts"
 $moduleDirectory     = Join-Path $scriptDirectory "modules"
-$assetsDirectory     = Join-Path $scriptDirectory "assets"
+# $assetsDirectory     = Join-Path $scriptDirectory "assets"
 $loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
 $utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
 $registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
