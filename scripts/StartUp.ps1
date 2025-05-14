@@ -89,6 +89,19 @@ try{
     } catch {
         Write-Error "Failed during device name validation: $_"
     }
+
+    if (Test-CTEProperFormat -DeviceName $env:COMPUTERNAME){
+        if(Test-Path "C:\Program Files\Mesh Agent\MeshAgent.exe"){
+            Write-Info "Mesh Agent is already installed."
+        } else {
+            Write-Info "Installing Mesh Agent..."
+            $Room = ($env:COMPUTERNAME.Split("-")[1] -replace '\D', '')
+            $MeshInstall = Join-Path $assetsDirectory "MeshCentral\meshagent64-$Room.exe"
+            Start-Process -FilePath $MeshInstall -ArgumentList "/install" -Wait
+            Write-Info "Mesh Agent installed successfully."
+        }
+    }
+
     
     Write-Info "Start-up tasks completed successfully."
 
