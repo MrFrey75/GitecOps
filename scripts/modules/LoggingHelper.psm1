@@ -43,14 +43,15 @@ function Set-GitecLogSettings {
         [bool]$ConsoleOutput = $true
     )
 
-    $script:LogName = $Name
+    # LogName _ current date
+    $script:LogName = $Name + "_" + (Get-Date -Format "yyyy-MM-dd")
     $script:EnableConsoleOutput = $ConsoleOutput
 
     if (-not (Test-Path $script:LogRoot)) {
         New-Item -ItemType Directory -Path $script:LogRoot -Force | Out-Null
     }
     if (-not (Test-Path (Join-Path $script:LogRoot "$($script:LogName).log"))) {
-        New-GitecFile -Path (Join-Path $script:LogRoot "$($script:LogName).log")
+        New-Item -ItemType File -Path (Join-Path $script:LogRoot "$($script:LogName).log") -Force | Out-Null
     }
 }
 

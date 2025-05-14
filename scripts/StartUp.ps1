@@ -12,6 +12,7 @@ $asetsDirectory     = Join-Path $scriptDirectory "assets"
 $loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
 $utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
 $registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
+$deviceModulePath    = Join-Path $moduleDirectory "DeviceHelper.psm1"
 
 #  REMOVE === vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
 

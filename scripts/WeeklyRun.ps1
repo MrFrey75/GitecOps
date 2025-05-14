@@ -12,6 +12,7 @@ $asetsDirectory     = Join-Path $scriptDirectory "assets"
 $loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
 $utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
 $registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
+$deviceModulePath    = Join-Path $moduleDirectory "DeviceHelper.psm1"
 
 #  REMOVE === vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
 
@@ -31,26 +32,22 @@ function Copy-ToProd {
     }
 
     Get-ChildItem -Path $SourcePath -Recurse -Force | ForEach-Object {
-        try {
-            $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
-            $targetPath = Join-Path $DestinationPath $relativePath
 
-            if ($_.PSIsContainer) {
-                if (-not (Test-Path $targetPath)) {
-                    New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-                    Write-Info "Created directory: $targetPath"
-                }
-            } else {
-                $targetDir = Split-Path $targetPath -Parent
-                if (-not (Test-Path $targetDir)) {
-                    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-                }
-                Copy-Item -Path $_.FullName -Destination $targetPath -Force
-                Write-Info "Copied: $($_.FullName) → $targetPath"
+        $relativePath = $_.FullName.Substring($SourcePath.Length).TrimStart('\')
+        $targetPath = Join-Path $DestinationPath $relativePath
+
+        if ($_.PSIsContainer) {
+            if (-not (Test-Path $targetPath)) {
+                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
             }
-        } catch {
-            Write-Warning "Error copying '$($_.FullName)': $_"
+        } else {
+            $targetDir = Split-Path $targetPath -Parent
+            if (-not (Test-Path $targetDir)) {
+                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+            }
+            Copy-Item -Path $_.FullName -Destination $targetPath -Force
         }
+
     }
 }
 
@@ -69,6 +66,7 @@ try {
     Import-Module -Name $loggingModulePath  -Force -ErrorAction Stop
     Import-Module -Name $utilityModulePath  -Force -ErrorAction Stop
     Import-Module -Name $registryModulePath -Force -ErrorAction Stop
+    Import-Module -Name $deviceModulePath   -Force -ErrorAction Stop    
 } catch {
     Write-Error "Failed to import required modules: $_"
     exit 1
@@ -86,20 +84,34 @@ try {
     Write-Error "Error setting registry key '$RegKey': $_"
 }
 
-# ===============================
-# Main Weekly Task Logic Block
-# ===============================
-try {
-    Write-Info "Performing weekly tasks..."
+function Install-WindowsUpdate{
 
-    # ===========================
-    # Windows Updates
-    # ===========================
+    # Simulate the installation of Windows updates
+    Write-Info "Simulating installation of Windows updates..."
+    if ($IgnoreReboot) {
+        Write-Info "Ignoring reboot."
+    }
+    if ($AcceptAll) {
+        Write-Info "Accepting all updates."
+    }
+    if ($Verbose) {
+        Write-Info "Verbose output enabled."
+    }
+
     try {
         if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
             Write-Info "Installing PSWindowsUpdate module..."
             Install-PackageProvider -Name NuGet -Force -Scope CurrentUser -ErrorAction SilentlyContinue
             Install-Module -Name PSWindowsUpdate -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
+        }
+
+        $service = Get-Service -Name wuauserv -ErrorAction SilentlyContinue
+
+        if ($null -eq $service) {
+            Write-Info "Windows Update service not found. Starting it..."
+            Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+        } else {
+            Write-Info "Windows Update service is already running."
         }
 
         Import-Module PSWindowsUpdate -Force -ErrorAction Stop
@@ -108,8 +120,14 @@ try {
         $windowsUpdates = Get-WindowsUpdate -AcceptAll -IgnoreReboot
 
         if ($windowsUpdates) {
-            Write-Info "Installing available Windows updates..."
-            Install-WindowsUpdate -AcceptAll -IgnoreReboot
+            Write-Info "Found available Windows updates: $($windowsUpdates.Count)"
+            Install-WindowsUpdate -IgnoreReboot -AcceptAll -ErrorAction SilentlyContinue -Verbose -WhatIf
+            Write-Info "Windows updates installed successfully."
+
+            foreach ($update in $windowsUpdates) {
+                Write-Info "Installed update: $($update.Title)"
+            }
+
         } else {
             Write-Info "No Windows updates available."
         }
@@ -117,10 +135,19 @@ try {
         Write-Error "Windows Update step failed: $_"
     }
 
+}
+
+# ===============================
+# Main Weekly Task Logic Block
+# ===============================
+try {
+
     # ===========================
     # Weekly Maintenance Tasks
     # ===========================
     Write-Info "Running weekly maintenance tasks..."
+
+    Install-WindowsUpdate
 
     Write-Info "Weekly maintenance tasks completed."
 

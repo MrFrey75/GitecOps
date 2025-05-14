@@ -202,9 +202,9 @@ try {
     try {
         $taskFolder = "GitecOps"
         $tasks = @(
-            @{ Name = "Initialize";       Path = Join-Path $BaseDir "scripts\GitecOpsInit.ps1"; Trigger = "Startup" },
-            @{ Name = "DailyRun";   Path = Join-Path $BaseDir "scripts\DailyRun.ps1";     Trigger = "Daily";  Time = "12:00PM" },
-            @{ Name = "WeeklyRun";  Path = Join-Path $BaseDir "scripts\WeeklyRun.ps1";    Trigger = "Weekly"; Time = "08:00AM"; DaysOfWeek = "Monday" }
+            @{ Name = "Initialize";       Path = Join-Path $BaseDir "scripts\GitecOpsInit.ps1"; Trigger = "Startup" }
+            ,@{ Name = "DailyRun";   Path = Join-Path $BaseDir "scripts\DailyRun.ps1";     Trigger = "Daily";  Time = "12:00PM" }
+            #,@{ Name = "WeeklyRun";  Path = Join-Path $BaseDir "scripts\WeeklyRun.ps1";    Trigger = "Weekly"; Time = "08:00AM"; DaysOfWeek = "Monday" }
         )
 
         foreach ($task in $tasks) {
