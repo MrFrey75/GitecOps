@@ -5,7 +5,7 @@ param (
     [string]$LogName = "StartUp"
 )
 
-. "$BaseDir\scripts\modules\CoreHelper.psm1"
+Import-Module -Name "$BaseDir\scripts\modules\CoreHelper.psm1"   -Force -ErrorAction Stop
 
 try {
     Initialize-GitecModules -BaseDir $BaseDir
