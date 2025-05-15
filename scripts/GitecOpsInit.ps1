@@ -29,7 +29,7 @@ function Set-TaskAction {
     $existingTask = Get-ScheduledTask -TaskName $taskName -TaskPath "\$taskFolder\" -ErrorAction SilentlyContinue
 
     if ($existingTask) {
-        Write-Info "Scheduled task '$fullTaskName' already exists. Deleting..."
+        Write-Host "Scheduled task '$fullTaskName' already exists. Deleting..."
         Unregister-ScheduledTask -TaskName $taskName -TaskPath "\$taskFolder\" -Confirm:$false
     }
 
@@ -58,22 +58,22 @@ function Set-TaskAction {
 
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     Register-ScheduledTask -TaskName $taskName -TaskPath "\$taskFolder\" -Action $action -Trigger $trigger -Settings $settings -User "SYSTEM" -RunLevel Highest
-    Write-Info "Scheduled task '$fullTaskName' created successfully."
+    Write-Host "Scheduled task '$fullTaskName' created successfully."
 }
 
 function Install-GitWithWinget {
-    Write-Info "Using winget to install or upgrade Git..."
+    Write-Host "Using winget to install or upgrade Git..."
     try {
         $gitInstalled = winget list --name Git.Git -q | Select-String "Git.Git"
         if ($gitInstalled) {
             winget upgrade --id Git.Git --silent --accept-package-agreements --accept-source-agreements
-            Write-Info "Git upgrade completed successfully."
+            Write-Host "Git upgrade completed successfully."
         } else {
             winget install --id Git.Git --silent --accept-package-agreements --accept-source-agreements
-            Write-Info "Git installation completed successfully."
+            Write-Host "Git installation completed successfully."
         }
     } catch {
-        Write-Info "Failed using winget: $_" -ForegroundColor Yellow
+        Write-Host "Failed using winget: $_" -ForegroundColor Yellow
         return $false
     }
     return $true
@@ -91,7 +91,7 @@ function Install-GitClone {
             git clean -fd
             git pull --rebase
             Pop-Location
-            Write-Info "Repository updated successfully."
+            Write-Host "Repository updated successfully."
         } catch {
             Write-Host "Failed to pull latest changes: $_" -ForegroundColor Yellow
             return $false
@@ -100,7 +100,7 @@ function Install-GitClone {
         Write-Host "Cloning repository..."
         try {
             git clone $GitRepository $repoPath
-            Write-Info "Repository cloned successfully."
+            Write-Host "Repository cloned successfully."
         } catch {
             Write-Host "Failed to clone repository: $_" -ForegroundColor Yellow
             return $false
@@ -116,30 +116,30 @@ function Set-LocalAdminUser {
     )
     try {
         if (Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue) {
-            Write-Info "Local user '$UserName' already exists."
+            Write-Host "Local user '$UserName' already exists."
         } else {
             $securePassword = ConvertTo-SecureString $Password -AsPlainText -Force
             New-LocalUser -Name $UserName -Password $securePassword -FullName "CTE Admin" -Description "Local admin account for CTE"
             Add-LocalGroupMember -Group "Administrators" -Member $UserName
-            Write-Info "Local user '$UserName' created and added to Administrators group."
+            Write-Host "Local user '$UserName' created and added to Administrators group."
         }
     } catch {
-        Write-Error "Failed to create local user '$UserName': $_"
+        Write-Host "Failed to create local user '$UserName': $_"
     }
 }
 
-Write-Info "Starting initialization script..."
+Write-Host "Starting initialization script..."
 
 try {
     Set-RegistryKey -Name $RegKey -Value (Get-Date) -Type String
-    Write-Info "Registry key '$RegKey' set successfully."
+    Write-Host "Registry key '$RegKey' set successfully."
 } catch {
-    Write-Error "Error setting registry key '$RegKey': $_"
+    Write-Host "Error setting registry key '$RegKey': $_"
 }
 
 # Main execution
 try {
-    Write-Info "Performing initialization tasks..."
+    Write-Host "Performing initialization tasks..."
 
     Install-GitWithWinget
     Install-GitClone
@@ -147,7 +147,7 @@ try {
 
     if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
         $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
-        Write-Info "Module directory added to PSModulePath."
+        Write-Host "Module directory added to PSModulePath."
     }
 
     $taskFolder = "GitecOps"
@@ -167,7 +167,7 @@ try {
     }
 
 } catch {
-    Write-Error "An error occurred during initialization: $_"
+    Write-Host "An error occurred during initialization: $_"
 } finally {
-    Write-Info "Initialization script completed."
+    Write-Host "Initialization script completed."
 }
