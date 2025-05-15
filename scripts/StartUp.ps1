@@ -4,24 +4,14 @@ param (
     [string]$RegKey = "StartUpLastRun",
     [string]$LogName = "StartUp"
 )
-function Initialize-GitecModules {
-    param (
-        [Parameter(Mandatory = $true)][string]$BaseDir
-    )
 
-    $script:scriptDirectory     = Join-Path $BaseDir "scripts"
-    $script:moduleDirectory     = Join-Path $scriptDirectory "modules"
-    $script:assetsDirectory     = Join-Path $scriptDirectory "assets"
-    $script:CoreHelperModulePath   = Join-Path $moduleDirectory "GitecOps.psm1"
-
-    if (-not ($env:PSModulePath -split ";" | Where-Object { $_ -eq $moduleDirectory })) {
-        $env:PSModulePath = "$moduleDirectory;$env:PSModulePath"
-    }
-
-    Import-Module -Name $script:CoreHelperModulePath   -Force -ErrorAction Stop
-}
+$script:scriptDirectory     = Join-Path $BaseDir "scripts"
+$script:moduleDirectory     = Join-Path $scriptDirectory "modules"
+$script:assetsDirectory     = Join-Path $scriptDirectory "assets"
+$script:GitecOpsModulePath   = Join-Path $moduleDirectory "GitecOps.psm1"
 
 try {
+    Import-Module -Name $script:GitecOpsModulePath   -Force -ErrorAction Stop
     Initialize-GitecModules -BaseDir $BaseDir
     Set-LogContext -LogName $LogName -IsDebug $IsDebug
     Write-Info "=== StartUp script started ==="
