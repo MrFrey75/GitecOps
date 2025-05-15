@@ -128,8 +128,6 @@ function Set-LocalAdminUser {
     }
 }
 
-# Configure logging and set registry key
-Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
 Write-Info "Starting initialization script..."
 
 try {
@@ -156,7 +154,7 @@ try {
     $tasks = @(
         @{ Name = "Initialize"; Path = Join-Path $scriptDirectory "GitecOpsInit.ps1"; Trigger = "Startup" }
         @{ Name = "DailyRun";   Path = Join-Path $scriptDirectory "DailyRun.ps1";     Trigger = "Daily";  Time = "12:00PM" }
-        # @{ Name = "WeeklyRun";  Path = Join-Path $scriptDirectory "WeeklyRun.ps1";    Trigger = "Weekly"; Time = "08:00AM"; DaysOfWeek = "Monday" }
+        @{ Name = "WeeklyRun";  Path = Join-Path $scriptDirectory "WeeklyRun.ps1";    Trigger = "Weekly"; Time = "08:00AM"; DaysOfWeek = "Monday" }
     )
 
     foreach ($task in $tasks) {
