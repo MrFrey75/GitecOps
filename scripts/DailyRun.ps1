@@ -9,8 +9,10 @@ param (
 
 try {
     Initialize-GitecModules -BaseDir $BaseDir
+    
     Set-LogContext -LogName $LogName -IsDebug $IsDebug
     Write-Info "=== DailyRun script started ==="
+    Install-GitClone
     Set-RunTimestamp -RegKey $RegKey
 
     Invoke-DailyMaintenance
