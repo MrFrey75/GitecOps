@@ -14,6 +14,37 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit 1
 }
 
+function Set-RegistryKey {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$Name,
+        [Parameter(Mandatory)][object]$Value,
+        [string]$Key = "HKEY_LOCAL_MACHINE\SOFTWARE\GitecOps",
+        [ValidateSet("String", "DWord", "QWord", "Binary", "MultiString", "ExpandString")]
+        [string]$Type = "String"
+    )
+
+    try {
+        $psPath = $Key -replace '^HKEY_LOCAL_MACHINE', 'HKLM:'
+
+        if (-not (Test-Path $psPath)) {
+            New-Item -Path $psPath -Force | Out-Null
+            Write-Host "Created registry key: $psPath"
+        }
+
+        # Use New-ItemProperty for type support if key doesn't exist
+        if (-not (Get-ItemProperty -Path $psPath -Name $Name -ErrorAction SilentlyContinue)) {
+            New-ItemProperty -Path $psPath -Name $Name -Value $Value -PropertyType $Type -Force -ErrorAction Stop
+        } else {
+            Set-ItemProperty -Path $psPath -Name $Name -Value $Value -ErrorAction Stop
+        }
+
+        Write-Host "Set registry value: $Name = $Value at $psPath"
+    } catch {
+        Write-Host "Failed to set registry key '$Key' value '$Name': $_"
+    }
+}
+
 
 function Set-TaskAction {
     param (
