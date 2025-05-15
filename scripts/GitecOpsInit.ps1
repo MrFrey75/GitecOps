@@ -14,13 +14,6 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit 1
 }
 
-# Construct paths
-$scriptDirectory     = Join-Path $BaseDir "scripts"
-$moduleDirectory     = Join-Path $scriptDirectory "modules"
-# $assetsDirectory     = Join-Path $scriptDirectory "assets"
-$loggingModulePath   = Join-Path $moduleDirectory "LoggingHelper.psm1"
-$utilityModulePath   = Join-Path $moduleDirectory "Utilities.psm1"
-$registryModulePath  = Join-Path $moduleDirectory "RegistryHelper.psm1"
 
 function Set-TaskAction {
     param (
@@ -134,11 +127,6 @@ function Set-LocalAdminUser {
         Write-Error "Failed to create local user '$UserName': $_"
     }
 }
-
-# Import modules
-Import-Module -Name $utilityModulePath -Force -ErrorAction Stop
-Import-Module -Name $loggingModulePath -Force -ErrorAction Stop
-Import-Module -Name $registryModulePath -Force -ErrorAction Stop
 
 # Configure logging and set registry key
 Set-GitecLogSettings -Name $LogName -ConsoleOutput:$IsDebug
